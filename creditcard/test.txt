@@ -1,0 +1,147 @@
+test - cases 4 review
+
+
+1
+./creditcard validate "4400430180300003"
+
+
+2
+./creditcard validate "4400430180300002"
+
+
+3.1 / 3.2
+./creditcard validate "4400430180300003" "4400430180300011"
+
+
+4
+echo "4400430180300003" | ./creditcard validate --stdin
+
+
+5
+./creditcard generate "440043018030****" | ./creditcard validate --stdin
+
+
+6
+./creditcard validate "4400430180300002" "4400430180300003" "" "4400430180300011"
+
+
+7
+./creditcard generate --pick "44004301803"
+
+
+8
+./creditcard generate --pick "440043018*03****"
+
+
+9.1 / 9.2 / 9.3
+./creditcard generate --pick "440043018030****" | ./creditcard information --brands=brands.txt --issuers=issuers.txt --stdin
+
+
+10
+./creditcard
+
+
+11
+echo 440043018030*** | ./creditcard generate --pick --stdin
+
+
+12
+./creditcard validate ""
+
+
+13
+./creditcard validate "4400 4301 8030 0003"
+
+
+14
+./creditcard generate "4400430180300003"
+
+
+15
+./creditcard issue --brands=brands.txt --issuers=issuers.txt --brand=VISA --issuer="Kaspi Gold"
+
+
+16
+./creditcard validate "44004301803"
+
+
+17
+./creditcard generate --pick "4400430180****"
+
+
+18
+./creditcard generate --pick "440043018030****"
+
+
+19
+./creditcard generate "4400430180300003"
+
+
+20
+echo "" | ./creditcard validate --stdin
+
+
+21
+./creditcard generate --pick "44004306667$?*"
+
+
+22
+./creditcard generate --pick "44004301803*****"
+
+
+23
+./creditcard generate --pick "44004301803" "44004301803"
+
+
+24
+./creditcard generate --pick "440*04*30*183*" 
+
+
+25
+./creditcard generate --pick "44004301803*d**"
+
+
+26
+./creditcard generate --pick "44004301803*****" | ./creditcard validate --stdin
+
+
+27
+./creditcard generate --pick "44004301803*** *"
+
+
+28
+./creditcard generate 440043018030**** | ./creditcard information --brands=brands.txt --issuers=issuers.txt --stdin
+
+
+29
+./creditcard generate --pick "44004301803" "44004301803" | ./creditcard validate --stdin | ./creditcard information --brands=brands.txt --issuers=issuers.txt --stdin
+
+
+30
+./creditcard issue information --issuers=issuers.txt --brands=brands.txt --brand="VISA" --issuer="Kaspi Gold" generate 44004400440044**
+
+
+31
+./creditcard issue --brands="brands2.txt" --issuers="issuers2.txt" --brand=Alem --issuer="School"
+Alem:666         School:77772332          
+
+
+
+32
+./creditcard issue --brands="brands2.txt" --issuers="issuers2.txt" --brand=Alem --issuer="School"
+оба файлы пусты
+
+
+33
+./creditcard issue --brands="brands2.txt" --issuers="issuers2.txt" --brand=Alem --issuer="School"
+Alem:                               School:7772332                 issue не должен создавать карту с такими данными, префиксы разные
+
+
+34
+./creditcard issue --brands="brands2.txt" --issuers="issuers2.txt" --brand=Alem --issuer="School"
+Alem:asda                        School:
+
+
+
+35
+School:666666666666666666666666"                         Alem:666         длина неккоректная

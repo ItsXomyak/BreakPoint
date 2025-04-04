@@ -1,0 +1,113 @@
+1)./markovchain
+Error: no input text
+
+
+2)cat the_great_gatsby.txt | ./markovchain
+"Chapter 1 In my .............." // and not only first match, random
+
+
+// Test multiple times
+3)cat the_great_gatsby.txt | ./markovchain -w 10000 | wc -wc
+10000 55434 //should print always 10000 and different character count 
+
+
+4)cat the_great_gatsby.txt | ./markovchain -w 0
+	//it's empty. Nothing
+or  
+Error: number of words must be in between 1 and 10000
+
+
+5)cat the_great_gatsby.txt | ./markovchain -w 10001
+Error: number of words must be in between 1 and 10000
+
+
+6)cat the_great_gatsby.txt | ./markovchain -l 0
+Some random text
+or
+Error: lengthf of prefix must be in between 1 and 5
+
+
+7)cat the_great_gatsby.txt | ./markovchain -l 6
+Error: lengthf of prefix must be in between 1 and 5
+
+
+8)cat the_great_gatsby.txt | ./markovchain -l 1
+"Chapter 1 In ....."
+"Chapter 2 ..." // wc -w = 100
+"Chapter 9 ..."
+"Chapter 6 ..."
+
+9)cat the_great_gatsby.txt | ./markovchain -p "NOT FOUND PREFIX"
+Error: suffix not found
+or
+prefix must be '2' prefixLength words
+
+
+10)cat the_great_gatsby.txt | ./markovchain -p "Chapter 3"
+"Chapter 3 ......."
+
+
+11)cat the_great_gatsby.txt | ./markovchain -p "Chapter"
+Error: prefix must be at least '2' words
+
+
+12)echo "Ha ha he he" | ./markovchain
+Ha ha he he
+Error: suffix for 'he he' not found
+
+
+
+13)echo "Ha ha he he" | ./markovchain -w 4
+Ha ha he he
+
+
+14)echo "Ha ha he he" | ./markovchain -w 3
+Ha ha he
+
+
+15)echo "Ha ha he he" | ./markovchain -w 1
+Ha
+
+
+16)echo "Ha ha he he" | ./markovchain -l 3
+Ha ha he he
+Error: suffix for 'ha he he' not found
+
+
+
+17)echo "Ha ha he he" | ./markovchain -l 4
+Error: suffix for 'Ha ha he he' not found
+
+
+18)echo "Ha ha he he" | ./markovchain -l 1
+Ha ha he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he he
+
+
+
+19)echo "Ha" | ./markovchain
+Error: not enough words to generate prefix
+//this case I had 2 panic
+
+20)echo "" | ./markovchain
+Error: not enough words to generate prefix
+or
+Error: no input text
+
+
+21)echo "Ha ha he he" | ./markovchain -p "he he"
+Error
+
+
+22)echo "Ha ha he he" | ./markovchain -p "ha he"
+ha he he
+
+
+23)echo "Ha ha he he" | ./markovchain -p "ha he" -l 1
+ha he he he he ......
+or 
+prefix must be '2' prefixLength words
+
+
+
+24)echo "Ha ha he he" | ./markovchain -p "he" -l 1
+he he he he he ......
