@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Base URL for the API
+# Для хот коффи скрипт сделан лишь для проверки моего проекта, нужно переделать под себя
+
 BASE_URL="http://localhost:9090"
 
-# Function to post menu and get IDs
 post_menu_and_get_ids() {
     echo "Adding menu items and collecting their IDs..."
     
