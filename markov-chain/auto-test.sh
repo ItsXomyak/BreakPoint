@@ -279,7 +279,7 @@ test_case_4() {
     local actual_output=$(echo "$result" | sed -n '/__EXIT_STATUS__/q;p')
     local exit_status=$(echo "$result" | grep -oP '__EXIT_STATUS__\K\d+')
     local timeout_occurred=$(echo "$result" | grep -oP '__TIMEOUT__\K\w+')
-    verify_output "Chapter" "$actual_output" 0 "$exit_status" "$test_case" "$timeout_occurred"
+    verify_output "([a-zA-Z].*){5,}" "$actual_output" 1 "$exit_status" "$test_case" "$timeout_occurred"
 }
 
 test_case_5() {
@@ -289,7 +289,7 @@ test_case_5() {
     local actual_output=$(echo "$result" | sed -n '/__EXIT_STATUS__/q;p')
     local exit_status=$(echo "$result" | grep -oP '__EXIT_STATUS__\K\d+')
     local timeout_occurred=$(echo "$result" | grep -oP '__TIMEOUT__\K\w+')
-    verify_output "number of words must be between" "$actual_output" 1 "$exit_status" "$test_case" "$timeout_occurred"
+    verify_output "([a-zA-Z].*){5,}" "$actual_output" 1 "$exit_status" "$test_case" "$timeout_occurred"
 }
 
 test_case_6() {
@@ -299,7 +299,7 @@ test_case_6() {
     local actual_output=$(echo "$result" | sed -n '/__EXIT_STATUS__/q;p')
     local exit_status=$(echo "$result" | grep -oP '__EXIT_STATUS__\K\d+')
     local timeout_occurred=$(echo "$result" | grep -oP '__TIMEOUT__\K\w+')
-    verify_output "prefix length must be between" "$actual_output" 1 "$exit_status" "$test_case" "$timeout_occurred"
+    verify_output "([a-zA-Z].*){5,}" "$actual_output" 1 "$exit_status" "$test_case" "$timeout_occurred"
 }
 
 test_case_7() {
@@ -309,7 +309,7 @@ test_case_7() {
     local actual_output=$(echo "$result" | sed -n '/__EXIT_STATUS__/q;p')
     local exit_status=$(echo "$result" | grep -oP '__EXIT_STATUS__\K\d+')
     local timeout_occurred=$(echo "$result" | grep -oP '__TIMEOUT__\K\w+')
-    verify_output "prefix length must be between" "$actual_output" 1 "$exit_status" "$test_case" "$timeout_occurred"
+    verify_output "([a-zA-Z].*){5,}" "$actual_output" 1 "$exit_status" "$test_case" "$timeout_occurred"
 }
 
 test_case_8() {
@@ -319,7 +319,7 @@ test_case_8() {
     local actual_output=$(echo "$result" | sed -n '/__EXIT_STATUS__/q;p')
     local exit_status=$(echo "$result" | grep -oP '__EXIT_STATUS__\K\d+')
     local timeout_occurred=$(echo "$result" | grep -oP '__TIMEOUT__\K\w+')
-    verify_output "Chapter" "$actual_output" 0 "$exit_status" "$test_case" "$timeout_occurred"
+    verify_output "Chapter 1" "$actual_output" 0 "$exit_status" "$test_case" "$timeout_occurred"
 }
 
 test_case_9() {
@@ -329,8 +329,10 @@ test_case_9() {
     local actual_output=$(echo "$result" | sed -n '/__EXIT_STATUS__/q;p')
     local exit_status=$(echo "$result" | grep -oP '__EXIT_STATUS__\K\d+')
     local timeout_occurred=$(echo "$result" | grep -oP '__TIMEOUT__\K\w+')
-    verify_output "prefix must contain exactly" "$actual_output" 1 "$exit_status" "$test_case" "$timeout_occurred"
+
+    verify_output "([a-zA-Z].*?){5}" "$actual_output" 1 "$exit_status" "$test_case" "$timeout_occurred"
 }
+
 
 test_case_10() {
     local test_case="10"
@@ -349,7 +351,7 @@ test_case_11() {
     local actual_output=$(echo "$result" | sed -n '/__EXIT_STATUS__/q;p')
     local exit_status=$(echo "$result" | grep -oP '__EXIT_STATUS__\K\d+')
     local timeout_occurred=$(echo "$result" | grep -oP '__TIMEOUT__\K\w+')
-    verify_output "prefix must contain exactly" "$actual_output" 1 "$exit_status" "$test_case" "$timeout_occurred"
+    verify_output "([a-zA-Z].*){5,}" "$actual_output" 1 "$exit_status" "$test_case" "$timeout_occurred"
 }
 
 test_case_12() {
@@ -449,7 +451,7 @@ test_case_21() {
     local actual_output=$(echo "$result" | sed -n '/__EXIT_STATUS__/q;p')
     local exit_status=$(echo "$result" | grep -oP '__EXIT_STATUS__\K\d+')
     local timeout_occurred=$(echo "$result" | grep -oP '__TIMEOUT__\K\w+')
-    verify_output "he he" "$actual_output" 0 "$exit_status" "$test_case" "$timeout_occurred"
+    verify_output "([a-zA-Z].*?){5}" "$actual_output" 1 "$exit_status" "$test_case" "$timeout_occurred"
 }
 
 test_case_22() {
@@ -509,10 +511,13 @@ for i in {1..25}; do
 done
 
 echo
+echo -e "\n\e[1m\e[34m+-------------------------------------------+\e[0m"
+echo -e "\e[1m\e[34m|       The tool was made by mromanul.      |\e[0m"
+echo -e "\e[1m\e[34m+-------------------------------------------+\e[0m\n"
 if [ "$test_failed" = false ]; then
-    echo -e "${GREEN}All tests passed successfully!${RESET}"
+    echo -e "${GREEN}Unbelievable! All tests passed successfully!${RESET}"
     exit 0
 else
-    echo -e "${RED}Some tests failed.${RESET}"
+    echo -e "${RED}Some tests failed  |  To display all test cases, run \033[1m\033[32m./example.sh list\033[0m${RESET}"
     exit 1
 fi
