@@ -4,12 +4,18 @@ test_failed=false
 TIMEOUT_SECONDS=30
 
 # ANSI color codes
-GREEN="\033[32m"
-RED="\033[31m"
-YELLOW="\033[33m"
-MAGENTA="\033[35m"
-CYAN="\033[36m"
-RESET="\033[0m"
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+BLUE='\033[1;34m'
+CYAN='\033[0;36m'
+MAGENTA='\033[1;35m'
+YELLOW='\033[1;33m'
+WHITE='\033[1;37m'
+BOLD='\033[1m'
+RESET='\033[0m'
+
+UNCHECKED="${WHITE}▢${RESET}"
+CHECKED="${GREEN}▣${RESET}"
 
 
 INPUT_FILE="the_great_gatsby.txt"
@@ -18,7 +24,129 @@ if [ ! -f "$INPUT_FILE" ]; then
     exit 1
 fi
 
-# Utility functions
+list_all() {
+    echo -e "${CYAN}Test Cases for Markov Chain Program${RESET}\n"
+
+    printf "${BOLD}${BLUE}%-5s %-60s${RESET}\n" "No." "Command"
+    printf "${BOLD}${BLUE}%-5s %-60s${RESET}\n" "----" "------------------------------------------------------------"
+
+    printf "${YELLOW}%-5s${RESET} %s\n"  "1."  "./markovchain"
+    printf "${YELLOW}%-5s${RESET} %s\n"  "2."  "cat $INPUT_FILE | ./markovchain"
+    printf "${YELLOW}%-5s${RESET} %s\n"  "3."  "cat $INPUT_FILE | ./markovchain -w 10000 | wc -w"
+    printf "${YELLOW}%-5s${RESET} %s\n"  "4."  "cat $INPUT_FILE | ./markovchain -w 0"
+    printf "${YELLOW}%-5s${RESET} %s\n"  "5."  "cat $INPUT_FILE | ./markovchain -w 10001"
+    printf "${YELLOW}%-5s${RESET} %s\n"  "6."  "cat $INPUT_FILE | ./markovchain -l 0"
+    printf "${YELLOW}%-5s${RESET} %s\n"  "7."  "cat $INPUT_FILE | ./markovchain -l 6"
+    printf "${YELLOW}%-5s${RESET} %s\n"  "8."  "cat $INPUT_FILE | ./markovchain -l 2"
+    printf "${YELLOW}%-5s${RESET} %s\n"  "9."  "cat $INPUT_FILE | ./markovchain -p \"NOT FOUND PREFIX\""
+    printf "${YELLOW}%-5s${RESET} %s\n" "10." "cat $INPUT_FILE | ./markovchain -p \"Chapter 3\""
+    printf "${YELLOW}%-5s${RESET} %s\n" "11." "cat $INPUT_FILE | ./markovchain -p \"Chapter\""
+    printf "${YELLOW}%-5s${RESET} %s\n" "12." "echo \"Ha ha he he\" | ./markovchain"
+    printf "${YELLOW}%-5s${RESET} %s\n" "13." "echo \"Ha ha he he\" | ./markovchain -w 4"
+    printf "${YELLOW}%-5s${RESET} %s\n" "14." "echo \"Ha ha he he\" | ./markovchain -w 3"
+    printf "${YELLOW}%-5s${RESET} %s\n" "15." "echo \"Ha ha he he\" | ./markovchain -w 1"
+    printf "${YELLOW}%-5s${RESET} %s\n" "16." "echo \"Ha ha he he\" | ./markovchain -l 3"
+    printf "${YELLOW}%-5s${RESET} %s\n" "17." "echo \"Ha ha he he\" | ./markovchain -l 4"
+    printf "${YELLOW}%-5s${RESET} %s\n" "18." "echo \"Ha ha he he\" | ./markovchain -l 2"
+    printf "${YELLOW}%-5s${RESET} %s\n" "19." "echo \"Ha\" | ./markovchain"
+    printf "${YELLOW}%-5s${RESET} %s\n" "20." "echo \"\" | ./markovchain"
+    printf "${YELLOW}%-5s${RESET} %s\n" "21." "echo \"Ha ha he he\" | ./markovchain -p \"he he\""
+    printf "${YELLOW}%-5s${RESET} %s\n" "22." "echo \"Ha ha he he\" | ./markovchain -p \"ha he\""
+    printf "${YELLOW}%-5s${RESET} %s\n" "23." "echo \"Ha ha he he\" | ./markovchain -p \"ha he\" -l 2"
+    printf "${YELLOW}%-5s${RESET} %s\n" "24." "echo \"Ha ha he he\" | ./markovchain -p \"he\" -l 2"
+}
+
+print_help() {
+    echo -e "${CYAN}Usage: $0 [option]${RESET}"
+    echo
+    echo -e "${MAGENTA}Options:${RESET}"
+    echo -e "  ${YELLOW}empty arg${RESET}        Run all test cases"
+    echo -e "  ${YELLOW}list${RESET}       List all test cases"
+    echo -e "  ${YELLOW}help${RESET}       Show this help message"
+    echo -e "  ${YELLOW}questions${RESET}   Show questions"
+}
+
+questions() {
+    echo -e "${BOLD}${BLUE}═══════════════════════════════════════════════════════════════════════${RESET}"
+  echo -e "${BOLD}${WHITE}                   Markov Chain Program Evaluation${RESET}"
+  echo -e "${BOLD}${BLUE}═══════════════════════════════════════════════════════════════════════${RESET}"
+
+  echo -e "\n${BOLD}${WHITE}## Program functionality\n${RESET}"
+
+  echo -e "${CYAN}### The program prints generated text according to the Markov Chain algorithm.${RESET}"
+  echo -e "  - $UNCHECKED Yes"
+  echo -e "  - $UNCHECKED No"
+
+  echo -e "${CYAN}### The program uses default settings: prefix length of 2 words, suffix length of 1 word, starting with the first N words of the text, and maximum of 100 words.${RESET}"
+  echo -e "  - $UNCHECKED Yes"
+  echo -e "  - $UNCHECKED No"
+
+  echo -e "${CYAN}### The program prints an error message and stops generating text upon encountering an error.${RESET}"
+  echo -e "  - $UNCHECKED Yes"
+  echo -e "  - $UNCHECKED No"
+
+  echo -e "${CYAN}### The program limits the generated text to the specified number of words.${RESET}"
+  echo -e "  - $UNCHECKED Yes"
+  echo -e "  - $UNCHECKED No"
+
+  echo -e "${CYAN}### The program prints an error message if the specified number is negative or greater than 10,000.${RESET}"
+  echo -e "  - $UNCHECKED Yes"
+  echo -e "  - $UNCHECKED No"
+
+  echo -e "${CYAN}### The program generates text starting with the specified prefix if it is present in the original text.${RESET}"
+  echo -e "  - $UNCHECKED Yes"
+  echo -e "  - $UNCHECKED No"
+
+  echo -e "${CYAN}### The program prints an error message if the specified prefix is not present in the original text.${RESET}"
+  echo -e "  - $UNCHECKED Yes"
+  echo -e "  - $UNCHECKED No"
+
+  echo -e "${CYAN}### The program generates text using the specified prefix length.${RESET}"
+  echo -e "  - $UNCHECKED Yes"
+  echo -e "  - $UNCHECKED No"
+
+  echo -e "${CYAN}### The program prints usage information when requested.${RESET}"
+  echo -e "  - $UNCHECKED Yes"
+  echo -e "  - $UNCHECKED No"
+
+  echo -e "\n${BOLD}${WHITE}\n## Project presentation and code defense\n${RESET}"
+
+  echo -e "${CYAN}### Can the team clearly explain their code, logic, and design choices during the presentation?${RESET}"
+  echo -e "  - $UNCHECKED Yes"
+  echo -e "  - $UNCHECKED No"
+
+  echo -e "${CYAN}### Can the team effectively answer questions about their code and the decisions they made?${RESET}"
+  echo -e "  - $UNCHECKED Yes"
+  echo -e "  - $UNCHECKED No"
+
+  echo -e "${CYAN}### Can the team restore the code if you delete part of it?${RESET}"
+  echo -e "  - $UNCHECKED Yes"
+  echo -e "  - $UNCHECKED No"
+
+  echo -e "\n${BOLD}${WHITE}\n## Detailed feedback\n${RESET}"
+
+  echo -e "${BLUE}### What was great? What did you like the most about the program and the team performance?${RESET}"
+  echo -e "  "
+
+  echo -e "${BLUE}### What could be better? How those improvements could positively impact the outcome?${RESET}"
+  echo -e "  "
+}
+
+if [[ "$1" == "list" || "$1" == "list-all" || "$1" == "--list" || "$1" == "--list-all" || "$1" == "-l" || "$1" == "--list" || "$1" == "l" ]]; then
+    list_all
+    exit 0
+fi
+
+if [[ "$1" == "help" || "$1" == "--help" || "$1" == "-h" || "$1" == "h" ]]; then
+    print_help
+    exit 0
+fi
+
+if [[ "$1" == "questions" || "$1" == "--questions" || "$1" == "questions" || "$1" == "-q" || "$1" == "--questions" || "$1" == "q" ]]; then
+    questions
+    exit 0
+fi
+
 print_pass() {
     echo -e "[${GREEN}PASS${RESET}] $1"
 }
@@ -85,6 +213,8 @@ verify_output() {
         print_pass "Test case $test_case: Command executed successfully"
     fi
 }
+
+
 
 # Runs a command with timeout and captures output/exit status
 run_command() {
@@ -352,48 +482,32 @@ test_case_24() {
     verify_output "he he" "$actual_output" 0 "$exit_status" "$test_case" "$timeout_occurred"
 }
 
-# List all test cases
 test_case_25() {
-    echo -e "${CYAN}Test Cases for Markov Chain Program${RESET}"
-    echo
-    echo -e "${YELLOW}1.${RESET} ./markovchain"
-    echo -e "${YELLOW}2.${RESET} cat $INPUT_FILE | ./markovchain"
-    echo -e "${YELLOW}3.${RESET} cat $INPUT_FILE | ./markovchain -w 10000 | wc -w"
-    echo -e "${YELLOW}4.${RESET} cat $INPUT_FILE | ./markovchain -w 0"
-    echo -e "${YELLOW}5.${RESET} cat $INPUT_FILE | ./markovchain -w 10001"
-    echo -e "${YELLOW}6.${RESET} cat $INPUT_FILE | ./markovchain -l 0"
-    echo -e "${YELLOW}7.${RESET} cat $INPUT_FILE | ./markovchain -l 6"
-    echo -e "${YELLOW}8.${RESET} cat $INPUT_FILE | ./markovchain -l 2"
-    echo -e "${YELLOW}9.${RESET} cat $INPUT_FILE | ./markovchain -p \"NOT FOUND PREFIX\""
-    echo -e "${YELLOW}10.${RESET} cat $INPUT_FILE | ./markovchain -p \"Chapter 3\""
-    echo -e "${YELLOW}11.${RESET} cat $INPUT_FILE | ./markovchain -p \"Chapter\""
-    echo -e "${YELLOW}12.${RESET} echo \"Ha ha he he\" | ./markovchain"
-    echo -e "${YELLOW}13.${RESET} echo \"Ha ha he he\" | ./markovchain -w 4"
-    echo -e "${YELLOW}14.${RESET} echo \"Ha ha he he\" | ./markovchain -w 3"
-    echo -e "${YELLOW}15.${RESET} echo \"Ha ha he he\" | ./markovchain -w 1"
-    echo -e "${YELLOW}16.${RESET} echo \"Ha ha he he\" | ./markovchain -l 3"
-    echo -e "${YELLOW}17.${RESET} echo \"Ha ha he he\" | ./markovchain -l 4"
-    echo -e "${YELLOW}18.${RESET} echo \"Ha ha he he\" | ./markovchain -l 2"
-    echo -e "${YELLOW}19.${RESET} echo \"Ha\" | ./markovchain"
-    echo -e "${YELLOW}20.${RESET} echo \"\" | ./markovchain"
-    echo -e "${YELLOW}21.${RESET} echo \"Ha ha he he\" | ./markovchain -p \"he he\""
-    echo -e "${YELLOW}22.${RESET} echo \"Ha ha he he\" | ./markovchain -p \"ha he\""
-    echo -e "${YELLOW}23.${RESET} echo \"Ha ha he he\" | ./markovchain -p \"ha he\" -l 2"
-    echo -e "${YELLOW}24.${RESET} echo \"Ha ha he he\" | ./markovchain -p \"he\" -l 2"
+
+    result=$(gofmt -l .)
+
+    if [ -n "$result" ]; then
+        print_fail "GoFmt check failed. Files need formatting fixes."
+
+        echo -e "${YELLOW}Files with formatting issues:${RESET}"
+        echo "$result"
+
+        echo "Auto-fixing formatting errors with gofmt..."
+        gofmt -w . 
+
+        print_fail "Test case failed due to GoFmt issues."
+    else
+        print_pass "GoFmt check passed. All files are properly formatted."
+    fi
 }
 
-# Main execution
 echo -e "${CYAN}Running Markov Chain Tests${RESET}"
 echo
 
-# Run all test cases
 for i in {1..25}; do
     test_case_$i
 done
 
-
-
-# Summary
 echo
 if [ "$test_failed" = false ]; then
     echo -e "${GREEN}All tests passed successfully!${RESET}"
